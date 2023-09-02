@@ -12,7 +12,7 @@
     ansible.builtin.command: id roboshop
     register: output
     ignore_errors: true  
-  - name: This task is to diplay user roboshop
+  - name: This task is to add user roboshop
     ansible.builtin.user:
       name: roboshop
     when: output.rc != 0
@@ -23,6 +23,11 @@
   - name: This task is to display app directory
     ansible.builtin.debug:
       msg: "ouput : {{status}}"
+  - name: This task is to create app directory
+    ansible.builtin.file:
+      path: /app
+      state: directory
+    when: status.stat.exists == False
 
 
 
