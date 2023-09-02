@@ -1,0 +1,45 @@
+- name: This playbook is to install the web 
+  hosts: web
+  become: true
+  tasks:
+  - name: Install Nginx
+    ansible.builtin.yum:
+      name: nginx
+      state: installed
+
+  - name: This task is to Start & Enable nginx Service
+    ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: yes
+
+  - name: Remove html directory
+    ansible.builtin.file:
+      path: /usr/share/nginx/html/*
+      state: absent
+
+  - name: Remove html directory
+    ansible.builtin.file:
+      path: /usr/share/nginx/html/*
+      state: directory
+
+  - name: Download the frontend content
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/web.zip
+      dest: /tmp
+
+  - name: This task is to unzip
+    ansible.builtin.unarchive:
+      src: /tmp/web.zip
+      dest: /usr/share/nginx/html
+      remote_src: yes
+  
+  - name: This task is to copy the roboshopconf
+    ansible.builtin.copy:
+      src: roboshop.conf
+      dest: /etc/nginx/default.d/roboshop.conf
+  
+  - name: restart nginx
+    ansible.builtin.service:
+      name: nginx
+      state: restarted
