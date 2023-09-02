@@ -4,9 +4,9 @@
   tasks:
   - name: This task is to copy the mongo repo 
     ansible.builtin.copy:
-      src: mongo.repo
+      src: /home/centos/padmaansibleroboshop/mongo.repo
       dest: /etc/yum.repos.d/mongo.repo
-      remote_src: yes
+      # remote_src: yes
   - name: This task is to Install MongoDB
     ansible.builtin.yum:
       name: mongodb-org
