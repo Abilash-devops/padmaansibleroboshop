@@ -1,0 +1,1 @@
+Automate roboshop through ansible
