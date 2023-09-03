@@ -23,4 +23,7 @@ mysql.padmasrikanth.tech
 shipping.padmasrikanth.tech
 
 [rabbitmq]
-rabbitmq.padmasrikanth.tech	
+rabbitmq.padmasrikanth.tech
+
+[payment]
+payment.padmasrikanth.tech
