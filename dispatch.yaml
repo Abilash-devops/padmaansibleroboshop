@@ -44,9 +44,13 @@
       remote_src: yes
 
   - name: download the dependencies
-    ansible.builtin.command: go mod init dispatch
-    ansible.builtin.command: go get
-    ansible.builtin.command: go build
+    ansible.builtin.command: "{{item}}"
+    loop:
+    - go mod init dispatch
+    - go get
+    - go build
+    args:
+      chdir: /app
 
   - name: This task is to copy the dispatch Service
     ansible.builtin.copy:
