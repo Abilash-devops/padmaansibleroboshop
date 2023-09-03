@@ -5,5 +5,5 @@
   - name: This task is to install redis repo
     ansible.builtin.yum:
       name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm -y
-      state: isntalled
+      state: installed
   
