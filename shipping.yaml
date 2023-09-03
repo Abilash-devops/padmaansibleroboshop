@@ -1,0 +1,84 @@
+- name: This playbook is to install shipping module
+  hosts: shipping
+  become: true
+  tasks:
+  - name: install maven
+    ansible.builtin.yum:
+      name: maven
+      state: installed
+  
+  - name: This task is to check user roboshop
+    ansible.builtin.command: id roboshop
+    register: output
+    ignore_errors: true  
+
+  - name: This task is to add user roboshop
+    ansible.builtin.user:
+      name: roboshop
+    when: output.rc != 0
+
+  - name: This task is to check app directory
+    ansible.builtin.stat:
+      path: /app
+    register: status
+
+  - name: This task is to display app directory
+    ansible.builtin.debug:
+      msg: "ouput : {{status}}"
+
+  - name: This task is to create app directory
+    ansible.builtin.file:
+      path: /app
+      state: directory
+    when: status.stat.exists == False
+
+  - name: This task is to download the application code to created app directory.
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/shipping.zip
+      dest: /tmp
+
+  - name: This task is to unzip
+    ansible.builtin.unarchive:
+      src: /tmp/shipping.zip
+      dest: /app
+      remote_src: yes
+
+  - name: download the dependencies.
+    ansible.builtin.command: mvn clean package
+    args:
+      chdir: /app
+
+  - name: rename jar file
+    ansible.builtin.command: mv target/shipping-1.0.jar shipping.jar
+    args:
+      chdir: /app
+
+  - name: This task is to copy the shipping Service
+    ansible.builtin.copy:
+      src: shipping.service
+      dest: /etc/systemd/system/shipping.service
+
+  - name: This task is to Load the service.
+    ansible.builtin.systemd:
+      daemon_reload: true
+
+  - name: This task is to Start & Enable shipping  Service
+    ansible.builtin.service:
+      name: shipping
+      state: started
+      enabled: yes
+  
+  - name: install mysql client
+    ansible.builtin.yum:
+      name: mysql
+      state: installed
+
+  - name: Load Schema
+    ansible.builtin.shell: "mysql -h mysql.padmasrikanth.tech -uroot -pRoboShop@1 < /app/schema/shipping.sql" 
+
+  - name: restart shipping
+    ansible.builtin.service:
+      name: shipping
+      state: restarted   
+
+
