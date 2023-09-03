@@ -24,5 +24,5 @@
   - name: Use password RoboShop@1 or any other as per your choice.
     ansible.builtin.shell: "mysql_secure_installation --set-root-pass RoboShop@1"
 
-  - name: new password working or not
-    ansible.builtin.shell: "mysql -uroot -pRoboShop@1"  
+  # - name: new password working or not
+  #   ansible.builtin.shell: "mysql -uroot -pRoboShop@1"  
